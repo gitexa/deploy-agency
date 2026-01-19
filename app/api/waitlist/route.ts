@@ -1,8 +1,19 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 
+// Force Node.js runtime and dynamic rendering
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 // POST - Initial email signup
 export async function POST(request: Request) {
+  // Log environment check for debugging
+  console.log('[WAITLIST] Environment check:', {
+    hasUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+    hasKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    urlPrefix: process.env.NEXT_PUBLIC_SUPABASE_URL?.substring(0, 30),
+    nodeEnv: process.env.NODE_ENV
+  });
   try {
     const { email } = await request.json();
 
@@ -23,6 +34,8 @@ export async function POST(request: Request) {
     }
 
     // Insert into Supabase
+    console.log('[WAITLIST] Attempting insert:', { email: email.toLowerCase().trim() });
+
     const { data, error } = await supabase
       .from("waitlist")
       .insert([
@@ -43,9 +56,18 @@ export async function POST(request: Request) {
         );
       }
 
-      console.error("Supabase error:", error);
+      console.error('[WAITLIST] Supabase error:', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      });
+
       return NextResponse.json(
-        { error: "Failed to join waitlist" },
+        {
+          error: "Failed to join waitlist",
+          debug: process.env.NODE_ENV === 'development' ? error.message : undefined
+        },
         { status: 500 }
       );
     }
@@ -55,9 +77,17 @@ export async function POST(request: Request) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("API error:", error);
+    console.error('[WAITLIST] API error:', {
+      error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    });
+
     return NextResponse.json(
-      { error: "Internal server error" },
+      {
+        error: "Internal server error",
+        debug: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
+      },
       { status: 500 }
     );
   }
@@ -84,6 +114,8 @@ export async function PATCH(request: Request) {
     }
 
     // Update the record
+    console.log('[WAITLIST] Attempting update:', { email: email.toLowerCase().trim(), role, hasChallenge: !!challenge });
+
     const { data, error } = await supabase
       .from("waitlist")
       .update({
@@ -95,9 +127,18 @@ export async function PATCH(request: Request) {
       .single();
 
     if (error) {
-      console.error("Supabase update error:", error);
+      console.error('[WAITLIST] Supabase update error:', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      });
+
       return NextResponse.json(
-        { error: "Failed to update waitlist entry" },
+        {
+          error: "Failed to update waitlist entry",
+          debug: process.env.NODE_ENV === 'development' ? error.message : undefined
+        },
         { status: 500 }
       );
     }
@@ -114,9 +155,17 @@ export async function PATCH(request: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("API error:", error);
+    console.error('[WAITLIST] API error:', {
+      error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    });
+
     return NextResponse.json(
-      { error: "Internal server error" },
+      {
+        error: "Internal server error",
+        debug: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
+      },
       { status: 500 }
     );
   }
