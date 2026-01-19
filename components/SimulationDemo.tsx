@@ -63,9 +63,9 @@ export function SimulationDemo() {
               setCurrentTurn(0);
             }, 3000);
           }
-        }, 2000);
+        }, 1500);
       }
-    }, 30); // 30ms per character for realistic typing speed
+    }, 20); // 20ms per character for faster, smoother typing
 
     return () => clearInterval(typingInterval);
   }, [currentTurn]);
@@ -86,14 +86,14 @@ export function SimulationDemo() {
         </div>
 
         <Card className="border-border/40 bg-background/95 backdrop-blur-sm overflow-hidden">
-          <div className="grid md:grid-cols-2 divide-x divide-border/40">
+          <div className="grid md:grid-cols-2 md:divide-x divide-border/40">
             {/* Left Side - Prompt */}
-            <div className="p-8 space-y-4">
+            <div className="p-4 md:p-8 space-y-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground font-mono">
                 <span className="text-primary">system</span>
                 <span>@interview</span>
               </div>
-              <div className="space-y-4 min-h-[300px]">
+              <div className="space-y-4 min-h-[200px] md:min-h-[300px]">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentTurn}
@@ -112,7 +112,7 @@ export function SimulationDemo() {
                     >
                       {currentMessage?.role === "ai" ? "AI Interviewer" : "Candidate"}
                     </div>
-                    <p className="text-foreground leading-relaxed">
+                    <p className="text-sm md:text-base text-foreground leading-normal md:leading-relaxed break-words">
                       {displayedText}
                       {isTyping && (
                         <span className="inline-block w-2 h-5 ml-1 bg-primary animate-pulse" />
@@ -124,7 +124,7 @@ export function SimulationDemo() {
             </div>
 
             {/* Right Side - Assessment Badge */}
-            <div className="p-8 flex flex-col justify-center items-center text-center bg-card/50">
+            <div className="p-4 md:p-8 flex flex-col justify-center items-center text-center bg-card/50">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentMessage?.badge}
@@ -135,8 +135,8 @@ export function SimulationDemo() {
                   className="space-y-6"
                 >
                   {CurrentIcon && (
-                    <div className="inline-flex p-6 rounded-2xl bg-primary/10 border border-primary/20">
-                      <CurrentIcon className="h-12 w-12 text-primary" />
+                    <div className="inline-flex p-4 md:p-6 rounded-2xl bg-primary/10 border border-primary/20">
+                      <CurrentIcon className="h-8 w-8 md:h-12 md:w-12 text-primary" />
                     </div>
                   )}
                   <div>

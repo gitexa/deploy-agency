@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ViewModeProvider } from "@/lib/context/ViewModeContext";
+import { WaitlistProvider } from "@/lib/context/WaitlistContext";
 import { Navigation } from "@/components/Navigation";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -30,9 +33,13 @@ export default function RootLayout({
         className={`${inter.variable} ${jetbrainsMono.variable} antialiased font-sans`}
       >
         <ViewModeProvider>
-          <Navigation />
-          <main className="pt-20">{children}</main>
+          <WaitlistProvider>
+            <Navigation />
+            <main className="pt-20">{children}</main>
+          </WaitlistProvider>
         </ViewModeProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

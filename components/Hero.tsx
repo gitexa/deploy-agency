@@ -2,11 +2,14 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useViewMode } from "@/lib/context/ViewModeContext";
+import { useWaitlist } from "@/lib/context/WaitlistContext";
 import { Button } from "@/components/ui/button";
 import { Play, ArrowRight } from "lucide-react";
+import { track } from "@vercel/analytics";
 
 export function Hero() {
   const { viewMode } = useViewMode();
+  const { triggerWaitlist } = useWaitlist();
 
   return (
     <section className="relative min-h-[calc(100vh-5rem)] flex items-center justify-center overflow-hidden px-4">
@@ -40,15 +43,19 @@ export function Hero() {
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-2xl mx-auto">
-                <input
-                  type="text"
-                  placeholder="Paste your Job Description URL..."
-                  className="w-full px-6 py-4 rounded-lg bg-card border border-border/40 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-                />
-                <Button size="lg" className="whitespace-nowrap">
-                  Find Talent
+              <div className="flex items-center justify-center gap-4">
+                <Button
+                  size="lg"
+                  onClick={() => {
+                    triggerWaitlist();
+                    track("hero_cta_clicked", { view: "company" });
+                  }}
+                >
+                  Join Waitlist
                   <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+                <Button size="lg" variant="outline">
+                  Learn More
                 </Button>
               </div>
             </motion.div>
@@ -75,12 +82,20 @@ export function Hero() {
               </div>
 
               <div className="flex items-center justify-center gap-4">
-                <Button size="lg" variant="default" className="bg-secondary hover:bg-secondary/90">
+                <Button
+                  size="lg"
+                  variant="default"
+                  className="bg-secondary hover:bg-secondary/90"
+                  onClick={() => {
+                    triggerWaitlist();
+                    track("hero_cta_clicked", { view: "engineer" });
+                  }}
+                >
                   <Play className="mr-2 h-5 w-5" />
-                  Start Simulation Interview
+                  Join Waitlist
                 </Button>
                 <Button size="lg" variant="outline">
-                  View Open Roles
+                  Learn More
                 </Button>
               </div>
             </motion.div>
