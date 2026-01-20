@@ -8,7 +8,7 @@ import { ActiveRoles } from "@/components/ActiveRoles";
 import { HowItWorks } from "@/components/HowItWorks";
 import { Footer } from "@/components/Footer";
 import { WaitlistModal } from "@/components/WaitlistModal";
-import { PollModal } from "@/components/PollModal";
+import { QualificationModal } from "@/components/QualificationModal";
 import { useWaitlist } from "@/lib/context/WaitlistContext";
 import { track } from "@vercel/analytics";
 
@@ -16,15 +16,17 @@ export default function Home() {
   const [waitlistOpen, setWaitlistOpen] = useState(false);
   const [pollOpen, setPollOpen] = useState(false);
   const [userEmail, setUserEmail] = useState("");
-  const { onTrigger } = useWaitlist();
+  const { registerCallback } = useWaitlist();
 
   useEffect(() => {
     // Register the callback for opening the waitlist modal
-    onTrigger(() => {
+    registerCallback(() => {
       setWaitlistOpen(true);
       track("waitlist_modal_opened", { trigger: "manual" });
     });
+  }, [registerCallback]);
 
+  useEffect(() => {
     // Check if user already submitted
     const hasSubmitted = localStorage.getItem("waitlist_submitted") === "true";
 
@@ -37,7 +39,7 @@ export default function Home() {
 
       return () => clearTimeout(timer);
     }
-  }, [onTrigger]);
+  }, []);
 
   const handleWaitlistSuccess = (email: string) => {
     setUserEmail(email);
@@ -67,7 +69,7 @@ export default function Home() {
         onSuccess={handleWaitlistSuccess}
       />
 
-      <PollModal
+      <QualificationModal
         open={pollOpen}
         onOpenChange={handlePollClose}
         email={userEmail}

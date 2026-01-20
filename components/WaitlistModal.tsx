@@ -91,7 +91,7 @@ export function WaitlistModal({
             Join the Waitlist
           </DialogTitle>
           <DialogDescription>
-            Be the first to know when TalentLoop launches. Get exclusive early
+            Be the first to know when FDE Agency launches. Get exclusive early
             access and priority onboarding.
           </DialogDescription>
         </DialogHeader>

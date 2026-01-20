@@ -82,7 +82,7 @@ export function PollModal({ open, onOpenChange, email }: PollModalProps) {
 
               <div className="space-y-6 mt-6">
                 <p className="text-muted-foreground">
-                  Quick question: What brings you to TalentLoop?
+                  Quick question: What brings you to FDE Agency?
                 </p>
 
                 <div className="grid gap-4">
@@ -198,7 +198,7 @@ export function PollModal({ open, onOpenChange, email }: PollModalProps) {
                 <div>
                   <h3 className="text-2xl font-bold mb-2">You're all set!</h3>
                   <p className="text-muted-foreground">
-                    We'll notify you when TalentLoop launches.
+                    We'll notify you when FDE Agency launches.
                     <br />
                     Check your inbox for confirmation.
                   </p>

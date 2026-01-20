@@ -93,10 +93,11 @@ export async function POST(request: Request) {
   }
 }
 
-// PATCH - Update with poll data
+// PATCH - Update with qualification data
 export async function PATCH(request: Request) {
   try {
-    const { email, role, challenge } = await request.json();
+    const body = await request.json();
+    const { email, role } = body;
 
     if (!email) {
       return NextResponse.json(
@@ -105,7 +106,7 @@ export async function PATCH(request: Request) {
       );
     }
 
-    // Validate role if provided
+    // Validate role
     if (role && role !== "company" && role !== "engineer") {
       return NextResponse.json(
         { error: "Invalid role" },
@@ -113,15 +114,69 @@ export async function PATCH(request: Request) {
       );
     }
 
+    // Engineer field validation
+    const validEngineerFields = ['active', 'passive', 'student_junior'];
+    const validFdePersonas = ['pure_backend', 'forward_deployed', 'product_management'];
+    const validAssessments = ['standard_leetcode', 'practical_simulation', 'portfolio_only'];
+    const validSeniority = ['junior', 'senior', 'elite_staff'];
+
+    // Company field validation
+    const validTechnicalPain = ['research', 'implementation', 'maintenance'];
+    const validUrgency = ['critical', 'planned', 'browsing'];
+    const validEngagement = ['contract_project', 'contract_to_hire', 'full_time'];
+    const validBottleneck = ['sourcing', 'vetting', 'closing'];
+
+    // Build update object based on role
+    const updateData: any = { role };
+
+    if (role === "engineer") {
+      if (body.current_status && !validEngineerFields.includes(body.current_status)) {
+        return NextResponse.json({ error: "Invalid current_status" }, { status: 400 });
+      }
+      if (body.fde_persona && !validFdePersonas.includes(body.fde_persona)) {
+        return NextResponse.json({ error: "Invalid fde_persona" }, { status: 400 });
+      }
+      if (body.assessment_preference && !validAssessments.includes(body.assessment_preference)) {
+        return NextResponse.json({ error: "Invalid assessment_preference" }, { status: 400 });
+      }
+      if (body.seniority_rate && !validSeniority.includes(body.seniority_rate)) {
+        return NextResponse.json({ error: "Invalid seniority_rate" }, { status: 400 });
+      }
+
+      updateData.current_status = body.current_status || null;
+      updateData.fde_persona = body.fde_persona || null;
+      updateData.assessment_preference = body.assessment_preference || null;
+      updateData.seniority_rate = body.seniority_rate || null;
+    } else if (role === "company") {
+      if (body.technical_pain && !validTechnicalPain.includes(body.technical_pain)) {
+        return NextResponse.json({ error: "Invalid technical_pain" }, { status: 400 });
+      }
+      if (body.hiring_urgency && !validUrgency.includes(body.hiring_urgency)) {
+        return NextResponse.json({ error: "Invalid hiring_urgency" }, { status: 400 });
+      }
+      if (body.engagement_model && !validEngagement.includes(body.engagement_model)) {
+        return NextResponse.json({ error: "Invalid engagement_model" }, { status: 400 });
+      }
+      if (body.hiring_bottleneck && !validBottleneck.includes(body.hiring_bottleneck)) {
+        return NextResponse.json({ error: "Invalid hiring_bottleneck" }, { status: 400 });
+      }
+
+      updateData.technical_pain = body.technical_pain || null;
+      updateData.hiring_urgency = body.hiring_urgency || null;
+      updateData.engagement_model = body.engagement_model || null;
+      updateData.hiring_bottleneck = body.hiring_bottleneck || null;
+    }
+
     // Update the record
-    console.log('[WAITLIST] Attempting update:', { email: email.toLowerCase().trim(), role, hasChallenge: !!challenge });
+    console.log('[WAITLIST] Attempting qualification update:', {
+      email: email.toLowerCase().trim(),
+      role,
+      fields: Object.keys(updateData)
+    });
 
     const { data, error } = await supabase
       .from("waitlist")
-      .update({
-        role: role || null,
-        priority_challenge: challenge || null,
-      })
+      .update(updateData)
       .eq("email", email.toLowerCase().trim())
       .select()
       .single();
@@ -151,7 +206,7 @@ export async function PATCH(request: Request) {
     }
 
     return NextResponse.json(
-      { message: "Poll data saved successfully", data },
+      { message: "Qualification data saved successfully", data },
       { status: 200 }
     );
   } catch (error) {

@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ViewModeProvider } from "@/lib/context/ViewModeContext";
 import { WaitlistProvider } from "@/lib/context/WaitlistContext";
+import { AuthProvider } from "@/lib/context/AuthContext";
 import { Navigation } from "@/components/Navigation";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -18,8 +19,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TalentLoop - AI Talent Agency for FDEs",
-  description: "Deploy AI Agents. Hire the Builders. Connect with elite Forward Deployed Engineers.",
+  title: "FDE Agency - Forward Deployed Engineers",
+  description: "Professional agency connecting elite Forward Deployed Engineers with companies building AI systems. Pre-vetted talent, simulation-based assessment, rapid deployment.",
 };
 
 export default function RootLayout({
@@ -32,12 +33,14 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} antialiased font-sans`}
       >
-        <ViewModeProvider>
-          <WaitlistProvider>
-            <Navigation />
-            <main className="pt-20">{children}</main>
-          </WaitlistProvider>
-        </ViewModeProvider>
+        <AuthProvider>
+          <ViewModeProvider>
+            <WaitlistProvider>
+              <Navigation />
+              <main className="pt-20">{children}</main>
+            </WaitlistProvider>
+          </ViewModeProvider>
+        </AuthProvider>
         <Analytics />
         <SpeedInsights />
       </body>

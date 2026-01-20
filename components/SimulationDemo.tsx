@@ -41,33 +41,44 @@ export function SimulationDemo() {
     if (currentTurn >= conversation.length) return;
 
     const currentMessage = conversation[currentTurn];
-    setIsTyping(true);
+
+    // Clear text and wait a moment before starting to type
     setDisplayedText("");
+    setIsTyping(false);
 
-    let charIndex = 0;
-    const typingInterval = setInterval(() => {
-      if (charIndex < currentMessage.text.length) {
-        setDisplayedText((prev) => prev + currentMessage.text[charIndex]);
-        charIndex++;
-      } else {
-        clearInterval(typingInterval);
-        setIsTyping(false);
+    const startDelay = setTimeout(() => {
+      setIsTyping(true);
 
-        // Move to next turn after a pause
-        setTimeout(() => {
-          if (currentTurn < conversation.length - 1) {
-            setCurrentTurn((prev) => prev + 1);
-          } else {
-            // Reset to beginning after all turns complete
-            setTimeout(() => {
-              setCurrentTurn(0);
-            }, 3000);
-          }
-        }, 1500);
-      }
-    }, 20); // 20ms per character for faster, smoother typing
+      let charIndex = 0;
+      const typingInterval = setInterval(() => {
+        if (charIndex < currentMessage.text.length) {
+          setDisplayedText(currentMessage.text.substring(0, charIndex + 1));
+          charIndex++;
+        } else {
+          clearInterval(typingInterval);
+          setIsTyping(false);
 
-    return () => clearInterval(typingInterval);
+          // Move to next turn after a pause
+          const nextTurnTimer = setTimeout(() => {
+            if (currentTurn < conversation.length - 1) {
+              setCurrentTurn((prev) => prev + 1);
+            } else {
+              // Reset to beginning after all turns complete
+              const resetTimer = setTimeout(() => {
+                setCurrentTurn(0);
+              }, 3000);
+              return () => clearTimeout(resetTimer);
+            }
+          }, 1500);
+
+          return () => clearTimeout(nextTurnTimer);
+        }
+      }, 25); // 25ms per character for smoother animation
+
+      return () => clearInterval(typingInterval);
+    }, 100); // Small delay before starting to type
+
+    return () => clearTimeout(startDelay);
   }, [currentTurn]);
 
   const currentMessage = conversation[currentTurn];
@@ -100,7 +111,7 @@ export function SimulationDemo() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.2 }}
                     className="space-y-4"
                   >
                     <div
@@ -112,9 +123,9 @@ export function SimulationDemo() {
                     >
                       {currentMessage?.role === "ai" ? "AI Interviewer" : "Candidate"}
                     </div>
-                    <p className="text-sm md:text-base text-foreground leading-normal md:leading-relaxed break-words">
-                      {displayedText}
-                      {isTyping && (
+                    <p className="text-sm md:text-base text-foreground leading-normal md:leading-relaxed break-words whitespace-pre-wrap">
+                      {displayedText || "\u00A0"}
+                      {isTyping && displayedText && (
                         <span className="inline-block w-2 h-5 ml-1 bg-primary animate-pulse" />
                       )}
                     </p>

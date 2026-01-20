@@ -11,6 +11,13 @@ export function Hero() {
   const { viewMode } = useViewMode();
   const { triggerWaitlist } = useWaitlist();
 
+  const scrollToValueProps = () => {
+    const element = document.getElementById('value-props');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <section className="relative min-h-[calc(100vh-5rem)] flex items-center justify-center overflow-hidden px-4">
       {/* Background gradient effects */}
@@ -54,7 +61,14 @@ export function Hero() {
                   Join Waitlist
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-                <Button size="lg" variant="outline">
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  onClick={() => {
+                    scrollToValueProps();
+                    track("learn_more_clicked", { view: "company" });
+                  }}
+                >
                   Learn More
                 </Button>
               </div>
@@ -94,7 +108,14 @@ export function Hero() {
                   <Play className="mr-2 h-5 w-5" />
                   Join Waitlist
                 </Button>
-                <Button size="lg" variant="outline">
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  onClick={() => {
+                    scrollToValueProps();
+                    track("learn_more_clicked", { view: "engineer" });
+                  }}
+                >
                   Learn More
                 </Button>
               </div>

@@ -1,36 +1,138 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FDE Agency
+
+Professional agency connecting elite Forward Deployed Engineers with companies building AI systems.
+
+## Overview
+
+FDE Agency is a professional talent agency that matches vetted Forward Deployed Engineers with companies who need to build, deploy, and maintain AI systems in production. We focus on FDEs who excel at messy integrations, client collaboration, and shipping real solutions.
+
+## Key Features
+
+- **Qualification-Based Waitlist**: Collects high-signal data from both engineers and companies
+- **User Authentication**: Supabase-powered auth with email/password signup
+- **Multi-Role Support**: Separate flows for engineers seeking work and companies hiring
+- **Market Validation**: Built-in analytics to validate product-market fit
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **UI Components**: Radix UI + shadcn/ui
+- **Database**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth
+- **Analytics**: Vercel Analytics
+- **Animations**: Framer Motion
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+ 
+- npm/yarn/pnpm
+- Supabase account
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Set up environment variables:
+
+Create `.env.local` with:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+
+4. Run database migrations:
+
+- Execute `supabase-setup.sql` in Supabase SQL Editor
+- Execute `supabase-auth-setup.sql` for auth tables
+- Execute `supabase-waitlist-qualification.sql` for qualification fields
+
+5. Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Documentation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- [`AUTH_SETUP.md`](AUTH_SETUP.md) - Authentication setup guide
+- [`QUALIFICATION_SETUP.md`](QUALIFICATION_SETUP.md) - Waitlist qualification guide
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+fde-agency/
+├── app/                    # Next.js app directory
+│   ├── api/               # API routes
+│   ├── layout.tsx         # Root layout
+│   └── page.tsx           # Home page
+├── components/            # React components
+│   ├── auth/             # Authentication components
+│   ├── qualification/    # Qualification flow components
+│   └── ui/               # Reusable UI components
+├── lib/                   # Utilities and configs
+│   ├── context/          # React contexts
+│   └── supabase/         # Supabase clients
+└── supabase-*.sql        # Database migrations
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment
 
-## Deploy on Vercel
+### Vercel Deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Connect your repository to Vercel
+2. Add environment variables in Vercel dashboard
+3. Deploy
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Environment Variables for Production
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your-production-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-production-anon-key
+NEXT_PUBLIC_SITE_URL=https://fde.agency
+```
+
+## Features in Detail
+
+### Waitlist with Qualification
+
+- Email collection
+- Role selection (Engineer vs Company)
+- 4 targeted qualification questions per role
+- Success metrics tracking
+
+### Authentication System
+
+- Email/password signup and login
+- User profiles
+- Protected routes via middleware
+- Session management
+
+### Analytics
+
+Built-in views to track:
+- Engineer liquidity (% active vs passive)
+- FDE persona match (% forward deployed)
+- Assessment preference (validation of simulation product)
+- Company urgency and pain points
+
+## Contributing
+
+This is a private project for FDE Agency.
+
+## License
+
+Proprietary - All rights reserved © 2026 FDE Agency

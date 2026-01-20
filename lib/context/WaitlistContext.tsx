@@ -1,10 +1,10 @@
 "use client";
 
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useRef, useCallback } from "react";
 
 interface WaitlistContextType {
   triggerWaitlist: () => void;
-  onTrigger: (callback: () => void) => void;
+  registerCallback: (callback: () => void) => void;
 }
 
 const WaitlistContext = createContext<WaitlistContextType | undefined>(
@@ -12,20 +12,20 @@ const WaitlistContext = createContext<WaitlistContextType | undefined>(
 );
 
 export function WaitlistProvider({ children }: { children: React.ReactNode }) {
-  const [callback, setCallback] = useState<(() => void) | null>(null);
+  const callbackRef = useRef<(() => void) | null>(null);
 
-  const triggerWaitlist = () => {
-    if (callback) {
-      callback();
+  const triggerWaitlist = useCallback(() => {
+    if (callbackRef.current) {
+      callbackRef.current();
     }
-  };
+  }, []);
 
-  const onTrigger = (cb: () => void) => {
-    setCallback(() => cb);
-  };
+  const registerCallback = useCallback((cb: () => void) => {
+    callbackRef.current = cb;
+  }, []);
 
   return (
-    <WaitlistContext.Provider value={{ triggerWaitlist, onTrigger }}>
+    <WaitlistContext.Provider value={{ triggerWaitlist, registerCallback }}>
       {children}
     </WaitlistContext.Provider>
   );
